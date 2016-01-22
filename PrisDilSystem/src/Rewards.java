@@ -1,6 +1,6 @@
 
 public class Rewards {
-	int dc=0,dd=2,cc=1,cd=3;
+	int dc=5,dd=1,cc=3,cd=0;
 	int reward2=0;
 	public int getScore1(boolean action1,boolean action2)
 	{
