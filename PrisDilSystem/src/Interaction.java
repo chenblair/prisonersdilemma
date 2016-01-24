@@ -1,4 +1,4 @@
-
+//strategies: https://docs.google.com/spreadsheets/d/1io7_Tw5uInuwc7YjdeJb2QsRziiIh7Knjn1GdFc-7yg/edit#gid=0
 public class Interaction
 {
 	boolean prevA1=false,prevA2=false;
