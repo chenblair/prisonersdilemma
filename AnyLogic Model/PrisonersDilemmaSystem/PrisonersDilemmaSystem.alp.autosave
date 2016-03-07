@@ -263,7 +263,7 @@ if(ticforTacs.get(i).getDurability() < 0)
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[for(int i = 0; i<4; i++)
+					<Action><![CDATA[for(int i = 0; i<100; i++)
 {
 	add_ticforTacs();
 	if(i%2==0)
