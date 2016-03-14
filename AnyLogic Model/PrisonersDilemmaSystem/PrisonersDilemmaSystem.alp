@@ -113,6 +113,21 @@
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1457929993926</Id>
+					<Name><![CDATA[match]]></Name>
+					<X>130</X><Y>400</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int[]]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[new int[100];]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1457322140894</Id>
 					<Name><![CDATA[rematch]]></Name>
@@ -169,24 +184,23 @@
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[for(int i =0; i < ticforTacs.size() && rematch == false; i +=2)
+					<Action><![CDATA[for(int i =0; i < ticforTacs.size()/2 && rematch == false; i ++)
 {
-if((i+1) < ticforTacs.size() && ticforTacs.get(i).getDurability() >=0 && 
-ticforTacs.get(i+1).getDurability() >= 0 && numberofGames >=0)
+if(ticforTacs.get(match[i]).getDurability() >=0 && 
+ticforTacs.get(match[i]).getBuddy().getDurability() >= 0 && numberofGames >=0)
 {
 Random rand = new Random();
 
-	ticforTacs.get(i).setparameter(false);
+	ticforTacs.get(match[i]).setparameter(false);
 
-	ticforTacs.get(i+1).setparameter(true);
-	ticforTacs.get(i+1).setbuddy(ticforTacs.get(i));
-ticforTacs.get(i).setbuddy(ticforTacs.get(i+1));
+	ticforTacs.get(match[i]).getBuddy().setparameter(true);
+
 if(numberofGames == 10)
 {
-ticforTacs.get(i+1).moveTo(ticforTacs.get(i).getPosition().x + rand.nextInt(100) - 50
-, ticforTacs.get(i).getPosition().y + rand.nextInt(100) - 50);
+ticforTacs.get(match[i]).getBuddy().moveTo(ticforTacs.get(match[i]).getPosition().x + rand.nextInt(100) - 50
+, ticforTacs.get(match[i]).getPosition().y + rand.nextInt(100) - 50);
 }
-	ticforTacs.get(i+1).send(1.0,ticforTacs.get(i));
+	ticforTacs.get(match[i]).getBuddy().send(1.0,ticforTacs.get(match[i]));
 }
 }
 numberofGames--;
@@ -263,22 +277,29 @@ if(ticforTacs.get(i).getDurability() < 0)
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[for(int i = 0; i<4; i++)
+					<Action><![CDATA[for(int i = 0; i < 50; i++)
+{
+	match[i] = i;
+}
+for(int i = 0; i<100; i++)
 {
 	add_ticforTacs();
 	if(i%2==0)
 	{
-	ticforTacs.get(i).setparameter(false);
+		ticforTacs.get(i).setparameter(false);
 	
 	}
 	else
 	{
-	ticforTacs.get(i).setparameter(true);
-	ticforTacs.get(i).setbuddy(ticforTacs.get(i-1));
-	ticforTacs.get(i-1).setbuddy(ticforTacs.get(i));
+		ticforTacs.get(i).setparameter(true);
+
+		ticforTacs.get(i).setbuddy(ticforTacs.get(i-1));
+		ticforTacs.get(i-1).setbuddy(ticforTacs.get(i));
 	}
+	
 	Random rand = new Random();
 	ticforTacs.get(i).jumpTo(rand.nextInt(1000),rand.nextInt(500));
+	ticforTacs.get(i).setType(rand.nextInt(3));
 }
 ]]></Action>
 				</Event>
@@ -321,6 +342,40 @@ if(ticforTacs.get(i).getDurability() < 0)
 		}
 	}
 	numberofGames = 10;
+	for(int i = 0; i < ticforTacs.size(); i++)
+	{
+		boolean flag = false;
+		Random rand = new Random();
+		match[i] = rand.nextInt(ticforTacs.size());
+		for(int j = 0; j < i; j++)
+		{
+			if(match[i] == match[j])
+			{
+			 	flag = true;
+			}
+		}
+		if(flag)
+		{
+			i--;
+		}
+	}
+	int cnt = 0;
+	for(int i = 0; i < ticforTacs.size(); i++)
+	{
+		boolean flag = false;
+		for(int j = 0; j < ticforTacs.size()/2; j++)
+		{
+			if(i==match[j])
+			{
+				flag = true;
+			}
+		}
+		if(cnt < ticforTacs.size() / 2 && !flag)
+		{
+			ticforTacs.get(match[cnt]).setbuddy(ticforTacs.get(i));
+			ticforTacs.get(i).setbuddy(ticforTacs.get(match[cnt]));
+		}
+	}
 	rematch = false;
 }]]></Action>
 				</Event>
@@ -371,6 +426,12 @@ if(ticforTacs.get(i).getDurability() < 0)
 					<Parameters>
 						<Parameter>
 							<Name><![CDATA[parameter]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[type]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[buddy]]></Name>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>false</ReplicationFlag>
@@ -444,6 +505,12 @@ if(ticforTacs.get(i).getDurability() < 0)
 								<Code><![CDATA[true]]></Code>
 							</Value>
 						</Parameter>
+						<Parameter>
+							<Name><![CDATA[type]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[buddy]]></Name>
+						</Parameter>
 					</Parameters>
 					<ReplicationFlag>false</ReplicationFlag>
 					<Replication Class="CodeValue">
@@ -515,6 +582,12 @@ if(ticforTacs.get(i).getDurability() < 0)
 							<Value Class="CodeValue">
 								<Code><![CDATA[false]]></Code>
 							</Value>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[type]]></Name>
+						</Parameter>
+						<Parameter>
+							<Name><![CDATA[buddy]]></Name>
 						</Parameter>
 					</Parameters>
 					<ReplicationFlag>true</ReplicationFlag>
@@ -838,21 +911,6 @@ if(ticforTacs.get(i).getDurability() < 0)
 						</InitialValue>
 					</Properties>
 				</Variable>
-				<Variable Class="PlainVariable">
-					<Id>1457323834982</Id>
-					<Name><![CDATA[buddy]]></Name>
-					<X>50</X><Y>250</Y>
-					<Label><X>10</X><Y>0</Y></Label>
-					<PublicFlag>false</PublicFlag>
-					<PresentationFlag>true</PresentationFlag>
-					<ShowLabel>true</ShowLabel>
-					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
-						<Type><![CDATA[TicforTac]]></Type>        
-						<InitialValue Class="CodeValue">
-							<Code><![CDATA[null]]></Code>
-						</InitialValue>
-					</Properties>
-				</Variable>
 				<Variable Class="Parameter">
 					<Id>1454797184246</Id>
 					<Name><![CDATA[parameter]]></Name>
@@ -872,6 +930,53 @@ if(ticforTacs.get(i).getDurability() < 0)
 						<ParameterEditor>
 							<Id>1454797184244</Id>
 							<EditorContolType>CHECK_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1457918975753</Id>
+					<Name><![CDATA[type]]></Name>
+					<X>50</X><Y>290</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[int]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<NumericType><![CDATA[double]]></NumericType>
+						<SdArray>false</SdArray>
+						<DefaultValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</DefaultValue>
+						<ParameterEditor>
+							<Id>1457918975751</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
+							<MinSliderValue><![CDATA[0]]></MinSliderValue>
+							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
+							<DelimeterType>NO_DELIMETER</DelimeterType>
+						</ParameterEditor>
+					</Properties>                 
+				</Variable>
+				<Variable Class="Parameter">
+					<Id>1457919012530</Id>
+					<Name><![CDATA[buddy]]></Name>
+					<X>50</X><Y>250</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" ModificatorType="STATIC">
+						<Type><![CDATA[TicforTac]]></Type>
+						<UnitType><![CDATA[NONE]]></UnitType>
+						<NumericType><![CDATA[double]]></NumericType>
+						<SdArray>false</SdArray>
+						<ParameterEditor>
+							<Id>1457919012528</Id>
+							<EditorContolType>TEXT_BOX</EditorContolType>
 							<MinSliderValue><![CDATA[0]]></MinSliderValue>
 							<MaxSliderValue><![CDATA[100]]></MaxSliderValue>
 							<DelimeterType>NO_DELIMETER</DelimeterType>
@@ -1119,6 +1224,84 @@ else
 					</Parameter>
 					<Body><![CDATA[this.buddy = buddy;]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[TicforTac]]></ReturnType>
+					<Id>1457919182892</Id>
+					<Name><![CDATA[getBuddy]]></Name>
+					<X>50</X><Y>10</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return buddy;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1457919346903</Id>
+					<Name><![CDATA[process3]]></Name>
+					<X>50</X><Y>310</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[msg]]></Name>
+						<Type><![CDATA[double]]></Type>
+					</Parameter>
+					<Body><![CDATA[if(Math.random() > 0.5)
+{	
+	durability -= getConsequence(msg, 1);
+	this.send(getConsequence(1, msg),buddy);
+	lastMove = msg;
+	return;
+	
+}
+else
+{
+	durability -= getConsequence(msg, 0);
+	this.send(getConsequence(0, msg),buddy);
+	lastMove = msg;
+	return;
+}
+]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1457919350171</Id>
+					<Name><![CDATA[process4]]></Name>
+					<X>50</X><Y>330</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[msg]]></Name>
+						<Type><![CDATA[double]]></Type>
+					</Parameter>
+					<Body><![CDATA[	durability -= getConsequence(msg, 1);
+	this.send(getConsequence(1, msg),buddy);
+	lastMove = msg;
+	return;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1457927420484</Id>
+					<Name><![CDATA[setType]]></Name>
+					<X>50</X><Y>350</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[type]]></Name>
+						<Type><![CDATA[int]]></Type>
+					</Parameter>
+					<Body><![CDATA[this.type = type;]]></Body>
+				</Function>
 			</Functions>
 			<AgentLinks>
 				<AgentLink>
@@ -1129,8 +1312,15 @@ else
 					<PublicFlag>false</PublicFlag>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
-					<OnReceive><![CDATA[if(parameter == false) {process(msg);}
-else {process2(msg);}]]></OnReceive>
+					<OnReceive><![CDATA[if(parameter == false) {if (type == 0) {process(msg);}
+if(type == 1)
+{process3(msg);}
+if(type == 2)
+{
+process4(msg);
+}
+}
+else { process2(msg);}]]></OnReceive>
 					<HandleReceiveInConnections>false</HandleReceiveInConnections>
 					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
 					<AgentLinkBidirectional>true</AgentLinkBidirectional>
