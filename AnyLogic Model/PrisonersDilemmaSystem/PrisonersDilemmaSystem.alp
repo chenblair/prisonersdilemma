@@ -126,7 +126,7 @@
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[int[]]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[new int[100];]]></Code>
+							<Code><![CDATA[new int[800];]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -326,11 +326,11 @@ if(ticforTacs.get(i).getDurability() < 0)
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[for(int i = 0; i < 50; i++)
+					<Action><![CDATA[for(int i = 0; i < 350; i++)
 {
 	match[i] = i*2;
 }
-for(int i = 0; i<100; i++)
+for(int i = 0; i<700; i++)
 {
 	add_ticforTacs();
 	if(i%2==0)
@@ -346,9 +346,30 @@ for(int i = 0; i<100; i++)
 	
 	Random rand = new Random();
 	ticforTacs.get(i).jumpTo(rand.nextInt(1000),rand.nextInt(500));
-	ticforTacs.get(i).setType(rand.nextInt(8));
+	ticforTacs.get(i).setType(i%7);
 }
-]]></Action>
+for(int i = 0; i < ticforTacs.size(); i++)
+	{
+		boolean flag = false;
+		Random rand = new Random();
+		match[i] = rand.nextInt(ticforTacs.size());
+		for(int j = 0; j < i; j++)
+		{
+			if(match[i] == match[j])
+			{
+			 	flag = true;
+			}
+		}
+		if(flag)
+		{
+			i--;
+		}
+	}
+	for(int i = 0; i < ticforTacs.size()/2; i++)
+	{
+	ticforTacs.get(match[i]).setbuddy(ticforTacs.get(match[i + ticforTacs.size()/2]));
+	ticforTacs.get(match[i+ticforTacs.size()/2]).setbuddy(ticforTacs.get(match[i]));
+	}]]></Action>
 				</Event>
 				<Event>
 					<Id>1457322099090</Id>
@@ -435,7 +456,7 @@ for(int i = 0; i<100; i++)
 						<OccurrenceAtTime>true</OccurrenceAtTime>
 						<OccurrenceDate>1458028800000</OccurrenceDate>
 						<OccurrenceTime Class="CodeUnitValue">
-							<Code><![CDATA[566]]></Code>
+							<Code><![CDATA[5]]></Code>
 							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
 						</OccurrenceTime>
 						<RecurrenceCode Class="CodeUnitValue">
@@ -445,19 +466,25 @@ for(int i = 0; i<100; i++)
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
 					<Action><![CDATA[
-int cnt[] = new int[5];
-for(int i = 0; i < 6; i ++)
+int cnt[] = new int[8];
+int sum[] = new int[8];
+for(int i = 0; i < 8; i ++)
 {
 cnt[i] = 0;
+sum[i] = 0;
 }
 for(int i = 0; i < ticforTacs.size(); i++)
 {
 	cnt[ticforTacs.get(i).getType()]++;
+	sum[ticforTacs.get(i).getType()]+=ticforTacs.get(i).getDurability();
 }
-for(int i = 0; i < 4; i++)
+for(int i = 0; i < 8; i++)
 {
-	writer.write("Strategy" + i + ": " + cnt[i]+"\n");
+
+	writer.write(sum[i]+ " ");
+	
 }
+writer.write(System.lineSeparator());
 
 
 
@@ -498,6 +525,36 @@ catch(Exception e)
 {
 
 }]]></Action>
+				</Event>
+				<Event>
+					<Id>1458096709426</Id>
+					<Name><![CDATA[regenerate]]></Name>
+					<X>30</X><Y>220</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_SECOND]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1458115200000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
 				</Event>
 			</Events>
 			<AgentLinks>
@@ -1343,26 +1400,27 @@ else
 						<Name><![CDATA[actionB]]></Name>
 						<Type><![CDATA[double]]></Type>
 					</Parameter>
-					<Body><![CDATA[if(actionB>=1) // 0 cooperate, 1 defect
+					<Body><![CDATA[double regen=2.0;
+if(actionB>=1) // 0 cooperate, 1 defect
 {
 	if(actionA >= 1)
 	{
-		return 3.0;
+		return 3.0-regen;
 	}
 	else
 	{
-		return 0.0;
+		return 0.0-regen;
 	}
 }
 else
 {
 	if(actionA >= 1)
 	{
-		return 5.0;
+		return 5.0-regen;
 	}
 	else
 	{
-		return 1.0;
+		return 1.0-regen;
 	}
 }]]></Body>
 				</Function>
@@ -1912,7 +1970,7 @@ else {process2(msg);}]]></OnReceive>
 					<LineColor>-16777216</LineColor>
 					<LineMaterial>null</LineMaterial>
 					<LineStyle>SOLID</LineStyle>
-					<RadiusX>20</RadiusX>
+					<RadiusX>15</RadiusX>
 					<RadiusY>40</RadiusY>
 					<Rotation>0.0</Rotation>
 					<FillColor>-1</FillColor>
