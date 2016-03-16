@@ -1269,27 +1269,27 @@ catch(Exception e)
 					</Properties>
 					<Action><![CDATA[if(type==0)
 {
-	oval.setFillColor(new Color(0, 255, 0));
+	oval.setFillColor(new Color(27, 42, 246));
 }
 if(type == 1)
 {
-	oval.setFillColor(new Color(255, 0, 0));
+	oval.setFillColor(new Color(246, 27, 27));
 }
 if(type == 2)
 {
-	oval.setFillColor(new Color(0,0,255));
+	oval.setFillColor(new Color(240,152,75));
 }
 if(type == 3)
 {
-	oval.setFillColor(new Color(125, 125, 0));
+	oval.setFillColor(new Color(46, 141, 31));
 }
 if(type==4)
 {
-	oval.setFillColor(new Color(0, 125, 255));
+	oval.setFillColor(new Color(136, 13, 189));
 }
 if(type==5)
 {
-	oval.setFillColor(new Color(255, 0, 255));
+	oval.setFillColor(new Color(59, 153, 225));
 }
 if(type == 6)
 {
