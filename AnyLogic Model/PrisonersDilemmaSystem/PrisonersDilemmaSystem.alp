@@ -9,7 +9,7 @@
 	<Id>1453434860755</Id>
 	<Name><![CDATA[PrisonersDilemmaSystem]]></Name>
 	<EngineVersion>6</EngineVersion>
-	<JavaPackageName><![CDATA[prisonersdilemmasystem]]></JavaPackageName>
+	<JavaPackageName><![CDATA[risonersdilemmasystem]]></JavaPackageName>
 	<ModelTimeUnit><![CDATA[Second]]></ModelTimeUnit>
 	<ActiveObjectClasses>
 		<!--   =========   Active Object Class   ========  -->
@@ -19,6 +19,8 @@
 			<ClientAreaTopLeft><X>0</X><Y>0</Y></ClientAreaTopLeft>
 			<PresentationTopGroupPersistent>true</PresentationTopGroupPersistent>
 			<IconTopGroupPersistent>true</IconTopGroupPersistent>
+			<Import><![CDATA[import java.io.*;]]></Import>
+			<DestroyCode><![CDATA[writer.close();]]></DestroyCode>
 			<Generic>false</Generic>
 			<GenericParameter>
 				<Id>1453434860759</Id>
@@ -128,6 +130,45 @@
 						</InitialValue>
 					</Properties>
 				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1457990624691</Id>
+					<Name><![CDATA[numGames]]></Name>
+					<X>130</X><Y>260</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[int]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1458010055878</Id>
+					<Name><![CDATA[icejjfish]]></Name>
+					<X>130</X><Y>420</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1458019854133</Id>
+					<Name><![CDATA[writer]]></Name>
+					<X>130</X><Y>240</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[PrintWriter]]></Type>        
+					</Properties>
+				</Variable>
 				<Variable Class="Parameter">
 					<Id>1457322140894</Id>
 					<Name><![CDATA[rematch]]></Name>
@@ -191,22 +232,30 @@ ticforTacs.get(match[i]).getBuddy().getDurability() >= 0 && numberofGames >=0)
 {
 Random rand = new Random();
 
-	ticforTacs.get(match[i]).setparameter(false);
+ticforTacs.get(match[i]).setparameter(false);
 
-	ticforTacs.get(match[i]).getBuddy().setparameter(true);
+ticforTacs.get(match[i]).getBuddy().setparameter(true);
 
 if(numberofGames == 10)
 {
-ticforTacs.get(match[i]).getBuddy().moveTo(ticforTacs.get(match[i]).getPosition().x + rand.nextInt(100) - 50
-, ticforTacs.get(match[i]).getPosition().y + rand.nextInt(100) - 50);
+ticforTacs.get(match[i]).getBuddy().moveTo(Math.abs(ticforTacs.get(match[i]).getPosition().x + rand.nextInt(100) - 50)
+, Math.abs(ticforTacs.get(match[i]).getPosition().y + rand.nextInt(100) - 50));
 }
-	ticforTacs.get(match[i]).getBuddy().send(1.0,ticforTacs.get(match[i]));
+
+
+	double[] message = new double[2];
+	message[0] = -69.0;
+	message[1] = ticforTacs.get(match[i]).getBuddy().getReaction();
+	ticforTacs.get(match[i]).getBuddy().send(message,ticforTacs.get(match[i]));
+	
+
 }
 }
 numberofGames--;
 if(numberofGames<0)
 {
 rematch = true;
+numGames++;
 }
 
 ]]></Action>
@@ -279,7 +328,7 @@ if(ticforTacs.get(i).getDurability() < 0)
 					</Properties>
 					<Action><![CDATA[for(int i = 0; i < 50; i++)
 {
-	match[i] = i;
+	match[i] = i*2;
 }
 for(int i = 0; i<100; i++)
 {
@@ -287,19 +336,17 @@ for(int i = 0; i<100; i++)
 	if(i%2==0)
 	{
 		ticforTacs.get(i).setparameter(false);
-	
 	}
 	else
 	{
 		ticforTacs.get(i).setparameter(true);
-
 		ticforTacs.get(i).setbuddy(ticforTacs.get(i-1));
 		ticforTacs.get(i-1).setbuddy(ticforTacs.get(i));
 	}
 	
 	Random rand = new Random();
 	ticforTacs.get(i).jumpTo(rand.nextInt(1000),rand.nextInt(500));
-	ticforTacs.get(i).setType(rand.nextInt(3));
+	ticforTacs.get(i).setType(rand.nextInt(8));
 }
 ]]></Action>
 				</Event>
@@ -339,6 +386,7 @@ for(int i = 0; i<100; i++)
 		if(ticforTacs.get(i).getDurability()< 0)
 		{
 			remove_ticforTacs(ticforTacs.get(i));
+			i--;
 		}
 	}
 	numberofGames = 10;
@@ -359,24 +407,96 @@ for(int i = 0; i<100; i++)
 			i--;
 		}
 	}
-	int cnt = 0;
-	for(int i = 0; i < ticforTacs.size(); i++)
+	for(int i = 0; i < ticforTacs.size()/2; i++)
 	{
-		boolean flag = false;
-		for(int j = 0; j < ticforTacs.size()/2; j++)
-		{
-			if(i==match[j])
-			{
-				flag = true;
-			}
-		}
-		if(cnt < ticforTacs.size() / 2 && !flag)
-		{
-			ticforTacs.get(match[cnt]).setbuddy(ticforTacs.get(i));
-			ticforTacs.get(i).setbuddy(ticforTacs.get(match[cnt]));
-		}
+	ticforTacs.get(match[i]).setbuddy(ticforTacs.get(match[i + ticforTacs.size()/2]));
+	ticforTacs.get(match[i+ticforTacs.size()/2]).setbuddy(ticforTacs.get(match[i]));
 	}
 	rematch = false;
+}]]></Action>
+				</Event>
+				<Event>
+					<Id>1458017881375</Id>
+					<Name><![CDATA[printsurvivors]]></Name>
+					<X>30</X><Y>190</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="cyclic">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_SECOND]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1458028800000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[566]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[2]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[
+int cnt[] = new int[5];
+for(int i = 0; i < 6; i ++)
+{
+cnt[i] = 0;
+}
+for(int i = 0; i < ticforTacs.size(); i++)
+{
+	cnt[ticforTacs.get(i).getType()]++;
+}
+for(int i = 0; i < 4; i++)
+{
+	writer.write("Strategy" + i + ": " + cnt[i]+"\n");
+}
+
+
+
+]]></Action>
+				</Event>
+				<Event>
+					<Id>1458020304703</Id>
+					<Name><![CDATA[recorder]]></Name>
+					<X>30</X><Y>0</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties TriggerType="timeout" Mode="occuresOnce">
+						<Timeout Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</Timeout>
+						<Rate Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="RateUnits"><![CDATA[PER_SECOND]]></Unit>
+						</Rate>
+						<OccurrenceAtTime>true</OccurrenceAtTime>
+						<OccurrenceDate>1458028800000</OccurrenceDate>
+						<OccurrenceTime Class="CodeUnitValue">
+							<Code><![CDATA[0]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</OccurrenceTime>
+						<RecurrenceCode Class="CodeUnitValue">
+							<Code><![CDATA[1]]></Code>
+							<Unit Class="TimeUnits"><![CDATA[SECOND]]></Unit>
+						</RecurrenceCode>
+						<Condition><![CDATA[false]]></Condition>
+					</Properties>
+					<Action><![CDATA[try{
+writer = new PrintWriter("results3.txt", "UTF-8");}
+catch(Exception e)
+{
+
 }]]></Action>
 				</Event>
 			</Events>
@@ -413,12 +533,12 @@ for(int i = 0; i<100; i++)
 					<ShowLabel>true</ShowLabel>
 					<PresentationId>1454795945576</PresentationId>
 					<ActiveObjectClass>
-						<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+						<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 						<ClassName><![CDATA[TicforTac]]></ClassName>
 					</ActiveObjectClass>
 					<GenericParameterSubstitute>
 						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+							<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 							<ClassName><![CDATA[TicforTac]]></ClassName>
 							<ItemName><![CDATA[1454786616604]]></ItemName>
 						</GenericParameterSubstituteReference>
@@ -488,12 +608,12 @@ for(int i = 0; i<100; i++)
 					<ShowLabel>true</ShowLabel>
 					<PresentationId>1454797244401</PresentationId>
 					<ActiveObjectClass>
-						<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+						<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 						<ClassName><![CDATA[TicforTac]]></ClassName>
 					</ActiveObjectClass>
 					<GenericParameterSubstitute>
 						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+							<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 							<ClassName><![CDATA[TicforTac]]></ClassName>
 							<ItemName><![CDATA[1454786616604]]></ItemName>
 						</GenericParameterSubstituteReference>
@@ -566,12 +686,12 @@ for(int i = 0; i<100; i++)
 					<ShowLabel>true</ShowLabel>
 					<PresentationId>1457216111618</PresentationId>
 					<ActiveObjectClass>
-						<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+						<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 						<ClassName><![CDATA[TicforTac]]></ClassName>
 					</ActiveObjectClass>
 					<GenericParameterSubstitute>
 						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+							<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 							<ClassName><![CDATA[TicforTac]]></ClassName>
 							<ItemName><![CDATA[1454786616604]]></ItemName>
 						</GenericParameterSubstituteReference>
@@ -644,12 +764,12 @@ for(int i = 0; i<100; i++)
 					<ShowLabel>true</ShowLabel>
 					<PresentationId>1457295961188</PresentationId>
 					<ActiveObjectClass>
-						<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+						<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 						<ClassName><![CDATA[AlwaysDefect]]></ClassName>
 					</ActiveObjectClass>
 					<GenericParameterSubstitute>
 						<GenericParameterSubstituteReference>
-							<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+							<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 							<ClassName><![CDATA[AlwaysDefect]]></ClassName>
 							<ItemName><![CDATA[1454795763694]]></ItemName>
 						</GenericParameterSubstituteReference>
@@ -892,7 +1012,7 @@ for(int i = 0; i<100; i++)
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[-1]]></Code>
+							<Code><![CDATA[-1.0]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -907,7 +1027,52 @@ for(int i = 0; i<100; i++)
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[100]]></Code>
+							<Code><![CDATA[1000]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1458079225867</Id>
+					<Name><![CDATA[lastResult]]></Name>
+					<X>50</X><Y>430</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[-1.0]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1458080147736</Id>
+					<Name><![CDATA[lastPick]]></Name>
+					<X>50</X><Y>490</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[-1.0;]]></Code>
+						</InitialValue>
+					</Properties>
+				</Variable>
+				<Variable Class="PlainVariable">
+					<Id>1458086249488</Id>
+					<Name><![CDATA[firstResult]]></Name>
+					<X>50</X><Y>550</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
+						<Type><![CDATA[double]]></Type>        
+						<InitialValue Class="CodeValue">
+							<Code><![CDATA[0.5]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -1045,9 +1210,38 @@ for(int i = 0; i<100; i++)
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[oval.setFillColor(new Color(Math.abs((int)(100+durability*1.5)),
- Math.abs((int)(100+durability*1.5)),
- Math.abs((int)(100+durability*1.5) )));]]></Action>
+					<Action><![CDATA[if(type==0)
+{
+	oval.setFillColor(new Color(0, 255, 0));
+}
+if(type == 1)
+{
+	oval.setFillColor(new Color(255, 0, 0));
+}
+if(type == 2)
+{
+	oval.setFillColor(new Color(0,0,255));
+}
+if(type == 3)
+{
+	oval.setFillColor(new Color(125, 125, 0));
+}
+if(type==4)
+{
+	oval.setFillColor(new Color(0, 125, 255));
+}
+if(type==5)
+{
+	oval.setFillColor(new Color(255, 0, 255));
+}
+if(type == 6)
+{
+	oval.setFillColor(new Color(180, 6, 99));
+}
+if(type == 7)
+{
+	oval.setFillColor(new Color(0, 33, 55));
+}]]></Action>
 				</Event>
 				<Event>
 					<Id>1457324124959</Id>
@@ -1078,7 +1272,6 @@ for(int i = 0; i<100; i++)
 						</RecurrenceCode>
 						<Condition><![CDATA[false]]></Condition>
 					</Properties>
-					<Action><![CDATA[System.out.println(buddy);]]></Action>
 				</Event>
 			</Events>
 			<Functions>
@@ -1094,31 +1287,40 @@ for(int i = 0; i<100; i++)
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
 						<Name><![CDATA[msg]]></Name>
-						<Type><![CDATA[double]]></Type>
+						<Type><![CDATA[double[]]]></Type>
 					</Parameter>
 					<Body><![CDATA[if(lastMove == -1)
 {
 	int rand = 0;
 	if(rand == 0)
 	{
-		durability -= getConsequence(msg, 0);
-		this.send(getConsequence(0, msg), buddy);
-		lastMove = msg;
+		double[] mess = new double[2];
+		mess[0] = getConsequence(0, msg[1]);
+		mess[1] = 0.0;
+		durability -= getConsequence(msg[1], 0);
+		this.send(mess, buddy);
+		lastMove = msg[1];
 		return;
 	}
 	else
 	{
-		durability -= getConsequence(msg, 1);
-		this.send(getConsequence(1, msg),buddy);
-		lastMove = msg;
+	double[] mess = new double[2];
+		mess[0] = getConsequence(1, msg[1]);
+		mess[1] = 1;
+		durability -= getConsequence(msg[1], 1);
+		this.send(mess,buddy);
+		lastMove = msg[1];
 		return;
 	}
 }
 else
 {
-	durability -= getConsequence(msg, lastMove);
-	this.send(getConsequence(lastMove, msg),buddy);
-	lastMove = msg;
+	double[] mess = new double[2];
+		mess[0] = getConsequence(lastMove, msg[1]);
+		mess[1] = lastMove;
+	durability -= getConsequence(msg[1], lastMove);
+	this.send(mess,buddy);
+	lastMove = msg[1];
 	return;
 }
 ]]></Body>
@@ -1141,9 +1343,9 @@ else
 						<Name><![CDATA[actionB]]></Name>
 						<Type><![CDATA[double]]></Type>
 					</Parameter>
-					<Body><![CDATA[if(actionA>=1) // 0 cooperate, 1 defect
+					<Body><![CDATA[if(actionB>=1) // 0 cooperate, 1 defect
 {
-	if(actionB >= 1)
+	if(actionA >= 1)
 	{
 		return 3.0;
 	}
@@ -1154,7 +1356,7 @@ else
 }
 else
 {
-	if(actionB >= 1)
+	if(actionA >= 1)
 	{
 		return 5.0;
 	}
@@ -1176,9 +1378,11 @@ else
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
 						<Name><![CDATA[msg]]></Name>
-						<Type><![CDATA[double]]></Type>
+						<Type><![CDATA[double[]]]></Type>
 					</Parameter>
-					<Body><![CDATA[durability-= msg;]]></Body>
+					<Body><![CDATA[durability-= msg[0];
+lastMove = msg[1];
+lastResult = msg[0];]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
 					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
@@ -1248,21 +1452,27 @@ else
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
 						<Name><![CDATA[msg]]></Name>
-						<Type><![CDATA[double]]></Type>
+						<Type><![CDATA[double[]]]></Type>
 					</Parameter>
 					<Body><![CDATA[if(Math.random() > 0.5)
 {	
-	durability -= getConsequence(msg, 1);
-	this.send(getConsequence(1, msg),buddy);
-	lastMove = msg;
+	durability -= getConsequence(msg[1], 1);
+	double[] mess = new double[2];
+	mess[0] = getConsequence(1,msg[1]);
+	mess[1] = 1.0;
+	this.send(mess,buddy);
+	lastMove = msg[1];
 	return;
 	
 }
 else
 {
-	durability -= getConsequence(msg, 0);
-	this.send(getConsequence(0, msg),buddy);
-	lastMove = msg;
+	durability -= getConsequence(msg[1], 0);
+	double[] mess = new double[2];
+	mess[0] = getConsequence(0,msg[1]);
+	mess[1] = 0.0;
+	this.send(mess,buddy);
+	lastMove = msg[1];
 	return;
 }
 ]]></Body>
@@ -1279,11 +1489,14 @@ else
 					<ShowLabel>true</ShowLabel>
 					<Parameter>
 						<Name><![CDATA[msg]]></Name>
-						<Type><![CDATA[double]]></Type>
+						<Type><![CDATA[double[]]]></Type>
 					</Parameter>
-					<Body><![CDATA[	durability -= getConsequence(msg, 1);
-	this.send(getConsequence(1, msg),buddy);
-	lastMove = msg;
+					<Body><![CDATA[	durability -= getConsequence(msg[1], 1);
+	double[] mess = new double[2];
+	mess[0] = getConsequence(1,msg[1]);
+	mess[1] = 1.0;
+	this.send(mess,buddy);
+	lastMove = msg[1];
 	return;]]></Body>
 				</Function>
 				<Function AccessType="default" StaticFunction="false">
@@ -1302,6 +1515,317 @@ else
 					</Parameter>
 					<Body><![CDATA[this.type = type;]]></Body>
 				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1457983219478</Id>
+					<Name><![CDATA[getReaction]]></Name>
+					<X>50</X><Y>370</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[if(type == 0 || type==4)
+{
+if(lastMove == -1)
+{
+	if(type == 0)
+	{
+	return 0.0;
+	}
+	if(type==4)
+	{
+	return 1.0;
+	}
+}
+else
+{
+	return (double)lastMove;
+}
+}
+if(type==1)
+{
+if(Math.random() >0.5)
+{
+return 1.0;
+}
+else
+{
+return 0.0;
+}
+}
+if(type==2)
+{
+return 1.0;
+}
+if(type==3)
+{
+return 0.0;
+}
+if(type==5||type==6)
+{
+if(lastPick == -1)
+{
+if(type == 5){
+lastPick = 1.0;
+return 1.0;
+}
+else
+{
+lastPick = 0.0;
+return 0.0;
+}
+}
+else
+{
+if(lastResult <= 1.1)
+{
+return lastPick;
+}
+else
+{
+lastPick = 1 - lastPick;
+return 1- lastPick;
+}
+}
+}
+if(type == 7)
+{
+if(firstResult > 0.1 && firstResult < 0.5)
+{
+	firstResult = lastMove;
+	return 1;
+}
+return firstResult;
+}
+
+return -6;
+]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1458017738666</Id>
+					<Name><![CDATA[process5]]></Name>
+					<X>50</X><Y>390</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[msg]]></Name>
+						<Type><![CDATA[double[]]]></Type>
+					</Parameter>
+					<Body><![CDATA[	durability -= getConsequence(msg[1], 0);
+	double[] mess = new double[2];
+	mess[0] = getConsequence(0,msg[1]);
+	mess[1] = 0.0;
+	this.send(mess,buddy);
+	lastMove = msg[1];
+	return;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>RETURNS_VALUE</ReturnModificator>
+					<ReturnType><![CDATA[int]]></ReturnType>
+					<Id>1458017991513</Id>
+					<Name><![CDATA[getType]]></Name>
+					<X>50</X><Y>410</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Body><![CDATA[return type;]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1458079389297</Id>
+					<Name><![CDATA[process6]]></Name>
+					<X>50</X><Y>450</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[msg]]></Name>
+						<Type><![CDATA[double[]]]></Type>
+					</Parameter>
+					<Body><![CDATA[if(lastMove == -1)
+{
+	int rand = 1;
+	if(rand == 1)
+	{
+		double[] mess = new double[2];
+		mess[0] = getConsequence(1, msg[1]);
+		mess[1] = 1.0;
+		durability -= getConsequence(msg[1], 1);
+		this.send(mess, buddy);
+		lastMove = msg[1];
+		return;
+	}
+	else
+	{
+	double[] mess = new double[2];
+		mess[0] = getConsequence(1, msg[1]);
+		mess[1] = 1;
+		durability -= getConsequence(msg[1], 1);
+		this.send(mess,buddy);
+		lastMove = msg[1];
+		return;
+	}
+}
+else
+{
+	double[] mess = new double[2];
+		mess[0] = getConsequence(lastMove, msg[1]);
+		mess[1] = lastMove;
+	durability -= getConsequence(msg[1], lastMove);
+	this.send(mess,buddy);
+	lastMove = msg[1];
+	return;
+}
+]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1458079398087</Id>
+					<Name><![CDATA[process7]]></Name>
+					<X>50</X><Y>470</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[msg]]></Name>
+						<Type><![CDATA[double[]]]></Type>
+					</Parameter>
+					<Body><![CDATA[if(lastResult < 0)
+{
+	durability -= getConsequence(msg[1], 1);
+	double[] mess = new double[2];
+	mess[0] = getConsequence(1,msg[1]);
+	mess[1] = 1.0;
+	this.send(mess,buddy);
+	lastMove = msg[1];
+	lastPick = 1;
+	lastResult = getConsequence(msg[1], 1);
+	return;
+}
+else
+{
+	if(lastResult <= 1.1)
+	{
+		durability -= getConsequence(msg[1],lastPick );
+		double[] mess = new double[2];
+		mess[0] = getConsequence(lastPick,msg[1]);
+		mess[1] = lastPick;
+		this.send(mess,buddy);
+		lastMove = msg[1];
+		lastResult = getConsequence(msg[1], lastPick);
+		return;
+	}
+	else
+	{
+		durability -= getConsequence(msg[1], 1-lastPick);
+		double[] mess = new double[2];
+		mess[0] = getConsequence(1-lastPick,msg[1]);
+		mess[1] = 1.0 - lastPick;
+		this.send(mess,buddy);
+		lastMove = msg[1];
+		lastResult = getConsequence(msg[1], 1-lastPick);
+		lastPick = 1-lastPick;
+		return;
+	}
+}]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1458083958307</Id>
+					<Name><![CDATA[process8]]></Name>
+					<X>50</X><Y>510</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[msg]]></Name>
+						<Type><![CDATA[double[]]]></Type>
+					</Parameter>
+					<Body><![CDATA[if(lastResult < 0)
+{
+	durability -= getConsequence(msg[1], 0);
+	double[] mess = new double[2];
+	mess[0] = getConsequence(0,msg[1]);
+	mess[1] = 0.0;
+	this.send(mess,buddy);
+	lastMove = msg[1];
+	lastPick = 0;
+	lastResult = getConsequence(msg[1], 0);
+	return;
+}
+else
+{
+	if(lastResult <= 1.1)
+	{
+		durability -= getConsequence(msg[1],lastPick );
+		double[] mess = new double[2];
+		mess[0] = getConsequence(lastPick,msg[1]);
+		mess[1] = lastPick;
+		this.send(mess,buddy);
+		lastMove = msg[1];
+		lastResult = getConsequence(msg[1], lastPick);
+		return;
+	}
+	else
+	{
+		durability -= getConsequence(msg[1], 1-lastPick);
+		double[] mess = new double[2];
+		mess[0] = getConsequence(1-lastPick,msg[1]);
+		mess[1] = 1.0 - lastPick;
+		this.send(mess,buddy);
+		lastMove = msg[1];
+		lastResult = getConsequence(msg[1], 1-lastPick);
+		lastPick = 1-lastPick;
+		return;
+	}
+}]]></Body>
+				</Function>
+				<Function AccessType="default" StaticFunction="false">
+					<ReturnModificator>VOID</ReturnModificator>
+					<ReturnType><![CDATA[double]]></ReturnType>
+					<Id>1458086208598</Id>
+					<Name><![CDATA[process9]]></Name>
+					<X>50</X><Y>530</Y>
+					<Label><X>10</X><Y>0</Y></Label>
+					<PublicFlag>false</PublicFlag>
+					<PresentationFlag>true</PresentationFlag>
+					<ShowLabel>true</ShowLabel>
+					<Parameter>
+						<Name><![CDATA[msg]]></Name>
+						<Type><![CDATA[double[]]]></Type>
+					</Parameter>
+					<Body><![CDATA[if(firstResult > 0.1 && firstResult < 0.9)
+{
+	durability -= getConsequence(msg[1], 1);
+	double[] mess = new double[2];
+	mess[0] = getConsequence(1,msg[1]);
+	mess[1] = 1.0;
+	this.send(mess,buddy);
+	lastMove = msg[1];
+	firstResult = lastMove;
+	return;
+}
+else
+{
+	durability -= getConsequence(msg[1], firstResult);
+	double[] mess = new double[2];
+	mess[0] = getConsequence(firstResult,msg[1]);
+	mess[1] = firstResult;
+	this.send(mess,buddy);
+}]]></Body>
+				</Function>
 			</Functions>
 			<AgentLinks>
 				<AgentLink>
@@ -1319,12 +1843,32 @@ if(type == 2)
 {
 process4(msg);
 }
+if(type == 3)
+{
+process5(msg);
 }
-else { process2(msg);}]]></OnReceive>
+if(type == 4)
+{
+process6(msg);
+}
+if(type == 5)
+{
+process7(msg);
+}
+if(type == 6)
+{
+process8(msg);
+}
+if(type == 7)
+{
+process9(msg);
+}
+}
+else {process2(msg);}]]></OnReceive>
 					<HandleReceiveInConnections>false</HandleReceiveInConnections>
 					<AgentLinkType>COLLECTION_OF_LINKS</AgentLinkType>
 					<AgentLinkBidirectional>true</AgentLinkBidirectional>
-					<MessageType><![CDATA[Double]]></MessageType>
+					<MessageType><![CDATA[double[]]]></MessageType>
 					<LineStyle>SOLID</LineStyle>
 					<LineWidth>1</LineWidth>
 					<LineColor>-16777216</LineColor>
@@ -1344,7 +1888,7 @@ else { process2(msg);}]]></OnReceive>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<ActiveObjectClass>
-						<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+						<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
 					</ActiveObjectClass>
 				</ContainerLink>
@@ -1594,7 +2138,7 @@ else { process2(msg);}]]></OnReceive>
 					<PresentationFlag>true</PresentationFlag>
 					<ShowLabel>true</ShowLabel>
 					<ActiveObjectClass>
-						<PackageName><![CDATA[prisonersdilemmasystem]]></PackageName>
+						<PackageName><![CDATA[risonersdilemmasystem]]></PackageName>
 						<ClassName><![CDATA[Main]]></ClassName>
 					</ActiveObjectClass>
 				</ContainerLink>
