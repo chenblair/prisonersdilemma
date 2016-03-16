@@ -111,7 +111,7 @@
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[10]]></Code>
+							<Code><![CDATA[100]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
@@ -410,7 +410,7 @@ for(int i = 0; i < ticforTacs.size(); i++)
 			i--;
 		}
 	}
-	numberofGames = 10;
+	numberofGames = 100;
 	for(int i = 0; i < ticforTacs.size(); i++)
 	{
 		boolean flag = false;
@@ -1084,7 +1084,7 @@ catch(Exception e)
 					<Properties SaveInSnapshot="true" Constant="false" AccessType="public" StaticVariable="false">
 						<Type><![CDATA[double]]></Type>        
 						<InitialValue Class="CodeValue">
-							<Code><![CDATA[1000]]></Code>
+							<Code><![CDATA[10000]]></Code>
 						</InitialValue>
 					</Properties>
 				</Variable>
